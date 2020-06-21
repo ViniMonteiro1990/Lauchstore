@@ -41,11 +41,13 @@ const Mask = {
 /*para pegar os arquivos no input*/
 
 const PhotosUpload = {
+    input:"",
     preview:  document.querySelector('#photos-preview'),
     uploadLimit: 6,
     files: [],
     handleFileInput(event){
         const { files: fileList } = event.target
+        PhotosUpload.input = event.target
 
         if(PhotosUpload.hasLimit(event)) return
         
@@ -65,14 +67,27 @@ const PhotosUpload = {
             reader.readAsDataURL(file)
         })
 
-        PhotosUpload.getAllFiles()
+     PhotosUpload.input.files = PhotosUpload.getAllFiles()
     },
+    //para definir o limite maximo de fotos
     hasLimit(event){
-        const {uploadLimit} = PhotosUpload
-        const {files: fileList} = event.target
+        const {uploadLimit, input , preview} = PhotosUpload
+        const { files: fileList} = input
 
         if (fileList.length > uploadLimit){
             alert(`Envie no máximo ${uploadLimit} fotos`)
+            event.preventDefault()
+            return true
+        }
+        //preview eh o container de fotos e childNodes é cada imagem dentro dele
+        const photosDiv = []
+        preview.childNodes.forEach(item => {
+            if(item.classList && item.classList.value == "photo")
+                photosDiv.push(item)
+        })
+        const totalPhotos = fileList.length + photosDiv.length
+        if(totalPhotos > uploadLimit){
+            alert('Você atingiu o limite máximo de fotos')
             event.preventDefault()
             return true
         }
@@ -105,9 +120,12 @@ const PhotosUpload = {
         return button
     },
     removePhoto(event){
-        const photoDiv = event.target.parentNode
+        const photoDiv = event.target.parentNode // <div class="photo">
         const photosArray = Array.from(PhotosUpload.preview.children)
         const index = photosArray.indexOf(photoDiv)
+
+        PhotosUpload.files.splice(index, 1)
+        PhotosUpload.input.files = PhotosUpload.getAllFiles()
 
         photoDiv.remove()
     }

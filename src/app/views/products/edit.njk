@@ -3,7 +3,8 @@
 {% block content %}
 
 <section class="container form">
-    <form method="POST" action= "/products?_method=PUT">
+<!--para receber arquivos/upload dentro do form -->
+    <form method="POST" action= "/products?_method=PUT"enctype="multipart/form-data">
         
         <div class="header">
             <h3>Editar Produto {{productId}}</h3>
