@@ -4,6 +4,8 @@ const Product = require('../models/Product')
 
 module.exports= {
   async index(req,res){
+
+    
         let results = await Product.all()
         const products = results.rows
 
@@ -27,4 +29,4 @@ module.exports= {
         return res.render("home/index",{products: lastAdded})
 
     }
-}
+} 
